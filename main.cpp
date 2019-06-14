@@ -411,7 +411,7 @@ int main(){
               }
               if(choose == 4){
                 int id;
-                cout<<"Press\n1. Change personal email id\n2. Change mobile number";
+                cout<<endl<<"Press\n1. Change personal email id\n2. Change mobile number"<<endl;
                 cin>>id;
                 if(id == 1){
                   string email;
@@ -420,10 +420,19 @@ int main(){
                   e.changeEmail(email,l.checkId(user));
                 }
                 if(id == 2){
+                  conagain:
                   string contact;
-                  cout<<"Enter your new phone number.";
+                  cout<<"Enter your new phone number : "<<endl;
                   cin>>contact;
+                  if(e.checkCon(contact) == 10){
+                  e.setContact(contact);
                   e.changeContact(contact,l.checkId(user));
+                  }
+                  else{
+                    cout<<"The entered number should have 10 digits no more no less."<<endl;
+                    goto conagain;
+                  }
+
                 }
               }
               if(choose == 5){
@@ -507,7 +516,7 @@ int main(){
               }
               if(choose == 2){
                 int id;
-                cout<<"Press\n1. Change personal email id\n2. Change mobile number";
+                cout<<endl<<"Press\n1. Change personal email id\n2. Change mobile number"<<endl;
                 cin>>id;
                 if(id == 1){
                   string email;
@@ -516,10 +525,17 @@ int main(){
                   e.changeEmail(email,l.checkId(user));
                 }
                 if(id == 2){
+                  conagain:
                   string contact;
-                  cout<<"Enter your new phone number.";
+                  cout<<endl<<"Enter your new phone number : "<<endl;
                   cin>>contact;
+                  if(e.checkCon(contact) == 10){
+                  e.setContact(contact);
                   e.changeContact(contact,l.checkId(user));
+                  }
+                  else{
+                    cout<<"The entered number should have 10 digits no more no less."<<endl;
+                    goto conagain;
                 }
               }
               if(choose == 3){
