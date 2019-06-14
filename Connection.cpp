@@ -125,3 +125,28 @@ void Connection::changePass(string emp_uname,string pass){
   prep_stmt->setString(2,emp_uname);
   prep_stmt->executeUpdate();
 }
+
+void Connection::raiseTicket(int emp_id, string issue, string dept, string status){
+  prep_stmt = con->prepareStatement("INSERT INTO ticket_details( RAISED_BY, ISSUE, DEPT_CONC, STATUS) VALUES(?,?,?,?);");
+  prep_stmt->setInt(1, emp_id);
+  prep_stmt->setString(2, issue);
+  prep_stmt->setString(3, dept);
+  prep_stmt->setString(4, status);
+  prep_stmt->executeUpdate();
+}
+
+sql::ResultSet* Connection::viewTicket(string dept){
+  prep_stmt = con->prepareStatement("SELECT * FROM ticket_details WHERE DEPT_CONC = (?) AND STATUS ='PENDING';");
+  prep_stmt->setString(1,dept);
+  res = prep_stmt->executeQuery();
+  return res;
+
+}
+
+void Connection::updateTicket(int tick_id, int emp_id, string status){
+  prep_stmt = con->prepareStatement("UPDATE ticket_details SET STATUS = (?), RESOLVED_BY = (?) WHERE TICK_ID = (?);");
+  prep_stmt->setString(1,status);
+  prep_stmt->setInt(2,emp_id);
+  prep_stmt->setInt(3,tick_id);
+  prep_stmt->executeUpdate();
+}

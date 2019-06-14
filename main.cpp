@@ -81,6 +81,7 @@ public:
   void insert(employee e){
     Connection h;
     h.addEmployee(e.getName(),e.getSal(),e.getDept(),e.getEmail(),e.getContact());
+    cout<<"New employee details have been added Successfully";
   }
 
   void showMyDetails(int emp_id){
@@ -96,12 +97,45 @@ public:
   void changeEmail(string email, int emp_id){
     Connection h;
     h.changeEmail(email, emp_id);
+    cout<<"Your personal email updated Successfully";
   }
 
   void changeContact(string contact, int emp_id){
       Connection h;
       h.changeContact(contact, emp_id);
+      cout<<"Your contacts updated Successfully";
     }
+
+  string selectDept(){
+    int choose;
+    string dept;
+    cout<<endl<<"1. DEVELOPMENT\n2. TESTING\n3. HR\n4. HOUSEKEEPING\n5. IT\n6. SALES"<<endl;
+    cin>>choose;
+    if(choose == 1){
+        dept = "DEVELOPMENT";
+    }
+    if(choose == 2){
+        dept = "TESTING";
+    }
+    if(choose == 3){
+        dept = "HR";
+    }
+    if(choose == 4){
+        dept = "HOUSEKEEPING";
+    }
+    if(choose == 5){
+        dept = "IT";
+    }
+    if(choose == 6){
+        dept = "SALES";
+    }
+  return dept;
+  }
+
+int checkCon(string contact){
+  int a = contact.length();
+  return a;
+}
 
 };
 class login{
@@ -164,17 +198,14 @@ public:
   void insert(login l){
     Connection h;
     h.GenerateId(l.getEmpuname(), l.getPass(), l.getId());
+    cout<<"Generated Id-Password Successfully";
   }
 
-  int checkDept(string emp_uname){
+  string checkDept(string emp_uname){
     Connection h;
-    int flag = 0;
     string dept;
     dept = h.checkDept(emp_uname);
-    if(dept=="HR"){
-      flag = 1;
-    }
-    return flag;
+    return dept;
   }
 
   int checkId(string emp_uname){
@@ -187,6 +218,83 @@ public:
   void changePass(string emp_uname, string pass){
     Connection h;
     h.changePass(emp_uname, pass);
+    cout<<"Password Changed Successfully";
+  }
+};
+
+class ticket_details {
+  int TICK_ID;
+  int RAISED_BY;
+  string ISSUE;
+  string DEPT_CONC;
+  string STATUS;
+  int RESOLVED_BY;
+
+public:
+  ticket_details(){}
+
+  ticket_details(int tick_id, int raised_by, string issue,string dept_conc, string status, int resolved_by){
+    this->TICK_ID = tick_id;
+    this->RAISED_BY = raised_by;
+    this->ISSUE = issue;
+    this->DEPT_CONC = dept_conc;
+    this->STATUS = status;
+    this->RESOLVED_BY = resolved_by;
+  }
+  void toString(){
+    cout<<endl<<this->TICK_ID<<"\t"<<this->RAISED_BY<<"\t"<<this->ISSUE<<"\t"<<this->DEPT_CONC<<"\t"<<this->STATUS<<"\t"<<this->RESOLVED_BY;
+  }
+
+  void setTickId(int tick_id){
+    this->TICK_ID = tick_id;
+  }
+
+  int getTickId(){
+    return TICK_ID;
+  }
+
+  void setRaisedBy(int raised_by){
+    this->RAISED_BY = raised_by;
+  }
+
+  int getRaisedBy(){
+    return RAISED_BY;
+  }
+
+  void setIssue(string issue){
+    this->ISSUE = issue;
+  }
+
+  string getIssure(){
+    return ISSUE;
+  }
+
+  void raiseTicket(int emp_id, string issue, string dept, string status){
+    Connection h;
+    h.raiseTicket(emp_id, issue, dept, status);
+    cout<<"Ticket Raised Successfully";
+  }
+
+  void viewTicket(string dept){
+    Connection h;
+    sql::ResultSet* res;
+    res = h.viewTicket(dept);
+    int count = 0;
+    cout<<"TICKET ID  RaisedBy    Issue    Department  Status  RESOLVED_BY";
+    while(res->next()){
+      count = count+1;
+    ticket_details t(res->getInt("TICK_ID"),res->getInt("RAISED_BY"),res->getString("ISSUE"),res->getString("DEPT_CONC"),res->getString("STATUS"),res->getInt("RESOLVED_BY"));
+    t.toString();
+    }
+    if(count == 0){
+        cout<<endl<<"No tickets for your department currently"<<endl;
+     }
+  }
+
+  void updateTicket(int tick_id, int emp_id, string status){
+    Connection h;
+    h.updateTicket(tick_id, emp_id, status);
+    cout<<"Ticket Updated Successfully";
   }
 };
 
@@ -212,27 +320,39 @@ int main(){
       cin>>pass;
       if(pass == l.passCheck(user)){
           cout<<endl<<"You have Successfully logged-in";
-          int flag = l.checkDept(user);
-          if(flag == 1){
+          string flag = l.checkDept(user);
+          if(flag == "HR"){
             //cout<<endl<<"You are in hr section";
             int choose;
             while(true){
-              cout<<endl<<"Choose your operations."<<endl<<"1. Register New employee."<<endl<<"2. Generate username and password for new Employee"<<endl<<"3. Show my details"<<endl<<"4. Change your personal details"<<endl<<"5. Change your password"<<endl<<"6. Go back to main function.";
+              cout<<endl<<"Choose your operations."<<endl;
+              cout<<endl<<"0. LOGOUT and Go back to main function."<<endl;
+              cout<<"1. Register New employee."<<endl<<"2. Generate username and password for new Employee"<<endl<<"3. Show my details"<<endl<<"4. Change your personal details"<<endl<<"5. Change your password"<<endl<<"6. Raise a ticket"<<endl<<"7. View raised tickets"<<endl<<"8. Update resolved tickets status"<<endl;
               cin>>choose;
               if(choose == 1){
                   employee e;
                   string name;
                   int sal;
-                  cout<<"Enter Name : ";
+                  cout<<"Enter Name (*in all caps) : ";
                   cin.ignore();
                   getline(cin,name);
                   e.setName(name) ;
+                  try{
                   cout<<"Enter Salary : ";
                   cin>>sal;
+                  if(cin.fail()){
+                    throw 10;
+                    }
+                  }
+                  catch(int e)
+                  {
+                      cout<<endl<<"Please enter in number format only"<<endl<<"Please try again";
+                  }
                   e.setSal(sal);
                   string dept;
                   cout<<"Enter department : ";
-                  cin>>dept;
+                  // cin>>dept;
+                  dept = e.selectDept();
                   e.setDept(dept);
                   string email;
                   cout<<"Enter email : ";
@@ -241,9 +361,24 @@ int main(){
                   string contact;
                   cout<<"Enter contact : ";
                   cin>>contact;
+                  if(e.checkCon(contact) == 10){
                   e.setContact(contact);
-                  // cout<<name<<"\t"<<sal<<"\t"<<dept<<"\t"<<email<<"\t"<<contact<<endl;
                   e.insert(e);
+                  }
+                  else{
+                    cout<<"The entered number should have 10 digits no more no less.";
+                  }
+
+
+                  // catch(char ch)
+                  // {
+                  //     cout<<"\nCharacter exception caught.";
+                  // }
+                  // catch(double d)
+                  // {
+                  //     cout<<"\nDouble exception caught.";
+                  // }
+                  // cout<<name<<"\t"<<sal<<"\t"<<dept<<"\t"<<email<<"\t"<<contact<<endl;
 
               }
               if(choose == 2){
@@ -307,6 +442,42 @@ int main(){
 
               }
               if(choose == 6){
+                ticket_details t;
+                employee e;
+                int emp_id = l.checkId(user);
+                string issue,dept,status;
+                cout<<"Enter your Issue here : "<<endl;
+                cin.ignore();
+                getline(cin, issue);
+                cout<<"Select the department Concerned : ";
+                // cin>>dept;
+                dept = e.selectDept();
+                status = "PENDING";
+                if(dept == "HR" ){
+                t.raiseTicket(emp_id, issue, dept, status );
+              }
+              else{
+                cout<<"Please select either from HR/IT/HOUSEKEEPING";
+              }
+              }
+              if(choose == 7 ){
+                ticket_details t;
+                cout<<endl;
+                t.viewTicket(l.checkDept(user));
+              }
+              if(choose == 8 ){
+                ticket_details t;
+                int tick_id,emp_id;
+                string status;
+                cout<<"Enter the ticket number : ";
+                cin>>tick_id;
+                cout<<"Enter the new status : ";
+                cin>>status;
+                cout<<"Enter your employee id : ";
+                cin>>emp_id;
+                t.updateTicket(tick_id,emp_id,status);
+              }
+              if(choose == 0){
                 break;
               }
             }
@@ -314,7 +485,12 @@ int main(){
             //cout<<endl<<"You are in non hr section";
             while(true){
               int choose;
-              cout<<endl<<"Choose your operations."<<endl<<"1. Show My Details."<<endl<<"2. Change personal Details"<<endl<<"3. Change your password"<<endl<<"4. Go back to main function.";
+              cout<<endl<<"Choose your operations."<<endl;
+              cout<<endl<<"0. LOGOUT and Go back to main function."<<endl;
+              cout<<"1. Show My Details."<<endl<<"2. Change personal Details"<<endl<<"3. Change your password"<<endl<<"4. Raise Ticket"<<endl;
+              if(l.checkDept(user) == "IT" || l.checkDept(user)=="HOUSEKEEPING"){
+                cout<<"5. View tickets."<<endl<<"6. Update Resolved ticket status :"<<endl;
+              }
               cin>>choose;
               if(choose == 1){
                 employee e;
@@ -362,6 +538,36 @@ int main(){
 
               }
               if(choose == 4){
+                ticket_details t;
+                int emp_id = l.checkId(user);
+                string issue,dept,status;
+                cout<<"Enter your Issue here : "<<endl;
+                cin.ignore();
+                getline(cin, issue);
+                cout<<"Enter the department Concerned : ";
+                cin>>dept;
+                status = "PENDING";
+                t.raiseTicket(emp_id, issue, dept, status );
+              }
+              if(l.checkDept(user) == "IT" || l.checkDept(user)=="HOUSEKEEPING"){
+                if(choose == 5){
+                  ticket_details t;
+                  t.viewTicket(l.checkDept(user));
+                }
+                if(choose == 6){
+                  ticket_details t;
+                  int tick_id,emp_id;
+                  string status;
+                  cout<<"Enter the ticket number : ";
+                  cin>>tick_id;
+                  cout<<"Enter the new status : ";
+                  cin>>status;
+                  cout<<"Enter your employee id : ";
+                  cin>>emp_id;
+                  t.updateTicket(tick_id,emp_id,status);
+                }
+              }
+              if(choose == 0){
                 break;
               }
             }

@@ -30,5 +30,8 @@ public:
       void changeEmail(string email, int emp_id);
       void changeContact(string contact, int emp_id);
       void changePass(string emp_uname,string pass);
+      void raiseTicket(int emp_id, string issue, string dept,string status);
+      sql::ResultSet* viewTicket(string dept);
+      void updateTicket(int tick_id, int emp_id, string status);
 
 };
