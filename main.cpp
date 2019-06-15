@@ -525,7 +525,7 @@ int main(){
                   e.changeEmail(email,l.checkId(user));
                 }
                 if(id == 2){
-                  conagain:
+                  conagain1:
                   string contact;
                   cout<<endl<<"Enter your new phone number : "<<endl;
                   cin>>contact;
@@ -535,7 +535,8 @@ int main(){
                   }
                   else{
                     cout<<"The entered number should have 10 digits no more no less."<<endl;
-                    goto conagain;
+                    goto conagain1;
+                  }
                 }
               }
               if(choose == 3){
