@@ -1,35 +1,22 @@
-#include<iostream>
-#include<vector>
-#include<iterator>
+#include <thread>
+#include <iostream>
+#include <string>
 
 using namespace std;
-class stl{
-public:
-  void vec(){
-     vector<int> v;
-    int i;
-    vector<int>::iterator it;
-    cout<<"Number of elements in vector"<<endl;
-    cin>>i;
-    while(i>0){
-      int a;
-      cout<<"enter the elements"<<endl;
-      cin>>a;
-      v.push_back(a);
-      i--;
-    }
 
-    cout<<"size of vector is : "<<v.size()<<endl;
-
-    for(it=v.begin(); it<v.end(); it++){
-      cout<<*it<<endl;
-    }
-  }
-};
-
+void threadFunc(){
+	cout<<"Welcome to thread Function."<<endl;
+}
 
 int main(){
-  stl s;
-  s.vec();
-  return 0;
+	thread func(threadFunc);
+	if(func.joinable()){
+		cout<<"Attaching the thread."<<endl;
+		func.join();
+	}
+	else{
+		cout<<"The thread is detached.";
+	}
+	cout<<"Now you are in Main function.";
+	return 0;
 }
